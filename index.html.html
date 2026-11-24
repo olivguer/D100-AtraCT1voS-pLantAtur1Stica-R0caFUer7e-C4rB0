@@ -1,0 +1,289 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Dashboard Turístico Rocafuerte y Carbo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Layout: banda oscura de cabecera, pestañas, paneles con KPIs, barras interactivas, matrices y tabla filtrable */
+:root{--ink:#071B2B;--teal:#167D8D;--mist:#B9E4E8;--paper:#EEEEEE;--white:#fff;--line:rgba(7,27,43,.14);--muted:rgba(7,27,43,.68);
+--f-d:'Space Grotesk',system-ui,sans-serif;--f-b:'Inter',system-ui,sans-serif;color-scheme:light}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-b);font-size:14px;line-height:1.5;margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{background:var(--ink);color:var(--paper);margin-top:calc(-1*env(safe-area-inset-top,0px));padding-top:calc(env(safe-area-inset-top,0px) + 28px);padding-bottom:22px}
+.crumb{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mist)}
+h1{font-family:var(--f-d);font-size:clamp(26px,4vw,40px);margin:6px 0 6px;line-height:1.1;text-wrap:balance}
+.sub{color:var(--mist);max-width:70ch;margin:0}
+nav{background:var(--ink);position:sticky;top:env(safe-area-inset-top,0px);z-index:5;border-top:1px solid rgba(185,228,232,.2)}
+nav .wrap{display:flex;gap:4px;overflow-x:auto}
+nav button{background:none;border:0;color:var(--mist);font:500 14px var(--f-b);padding:12px 14px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap}
+nav button[aria-selected=true]{color:#fff;border-bottom-color:var(--teal)}
+nav button:hover{color:#fff}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+main{padding-block:24px 48px}
+section[hidden]{display:none}
+h2{font-family:var(--f-d);font-size:20px;margin:0 0 4px}
+.lead{color:var(--muted);margin:0 0 16px;max-width:75ch}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.kpi{background:var(--ink);color:var(--paper);padding:14px 16px;border-radius:6px}
+.kpi.alt{background:var(--teal)}.kpi.lt{background:var(--mist);color:var(--ink)}
+.kpi b{display:block;font:700 32px/1.1 var(--f-d);font-variant-numeric:tabular-nums}
+.kpi span{font-size:12px;opacity:.9}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:16px;margin-bottom:16px}
+.card{background:var(--white);border:1px solid var(--line);border-radius:6px;padding:16px;min-width:0}
+.card h3{font:600 15px var(--f-d);margin:0 0 2px}
+.card .hint{font-size:12px;color:var(--muted);margin:0 0 12px}
+.bar{display:grid;grid-template-columns:minmax(90px,38%) 1fr 34px;gap:8px;align-items:center;width:100%;background:none;border:0;padding:3px 0;text-align:left;font:inherit;color:inherit;cursor:pointer}
+.bar.static{cursor:default}
+.bar .l{font-size:12.5px;line-height:1.25;overflow-wrap:anywhere}
+.bar .t{background:var(--paper);height:16px;border-radius:2px;overflow:hidden}
+.bar .f{display:block;height:100%;background:var(--teal);border-radius:2px;transition:width .4s}
+.bar .v{font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
+.bar:not(.static):hover .f{background:var(--ink)}
+.bar.sel .f{background:var(--ink)}.bar.sel .l{font-weight:600}
+.bar.dim{opacity:.45}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--white)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{background:var(--ink);color:var(--paper);text-align:left;font-weight:600;padding:9px 12px;white-space:nowrap;position:sticky;top:0}
+td{padding:8px 12px;border-top:1px solid var(--line);vertical-align:top}
+tbody tr:nth-child(even){background:rgba(185,228,232,.28)}
+td.n{font-variant-numeric:tabular-nums;text-align:center}
+.mx th:first-child{min-width:150px}
+.mx td.c{text-align:center;font-weight:600;font-variant-numeric:tabular-nums;border-left:1px solid var(--line)}
+.mx tr.tot td,.mx tr.tot th{font-weight:700;background:var(--mist);color:var(--ink)}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:12px 0}
+input,select{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:4px;background:var(--white);color:var(--ink);min-width:0}
+input[type=search]{flex:1 1 220px}
+.chip{display:inline-flex;gap:6px;align-items:center;background:var(--mist);color:var(--ink);border:0;border-radius:99px;padding:4px 10px;font:500 12px var(--f-b);cursor:pointer}
+.chip:hover{background:var(--teal);color:#fff}
+.seg{display:inline-flex;border:1px solid var(--teal);border-radius:4px;overflow:hidden}
+.seg button{background:var(--white);color:var(--teal);border:0;padding:7px 12px;font:500 13px var(--f-b);cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--teal);color:#fff}
+.badge{display:inline-block;padding:1px 8px;border-radius:99px;font-size:12px;font-weight:600}
+.b-nat{background:var(--teal);color:#fff}.b-cul{background:var(--ink);color:#fff}
+.count{color:var(--muted);font-size:12.5px;margin-left:auto}
+.note{background:var(--mist);border-radius:6px;padding:12px 16px;margin-top:16px;font-size:13px}
+.note b{font-family:var(--f-d)}
+footer{color:var(--muted);font-size:12px;padding-bottom:32px}
+@media(prefers-reduced-motion:reduce){.bar .f{transition:none}}
+.donutwrap{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.dsvg{flex:0 0 190px;max-width:100%}.dsvg svg{width:190px;height:190px;display:block}
+.sl{cursor:pointer;transition:stroke-width .2s,opacity .2s}.sl:hover{stroke-width:36}.sl.dim{opacity:.35}
+.legend{flex:1 1 180px;min-width:0;display:flex;flex-direction:column;gap:2px}
+.lg{display:grid;grid-template-columns:12px 1fr auto 40px;gap:8px;align-items:center;background:none;border:0;border-radius:4px;padding:5px 6px;font:inherit;color:inherit;text-align:left;cursor:pointer}
+.lg:hover,.lg.on{background:var(--mist)}.lg i{width:12px;height:12px;border-radius:2px;border:1px solid rgba(7,27,43,.25)}
+.lg span{font-size:12.5px;line-height:1.25;overflow-wrap:anywhere}.lg b{font-variant-numeric:tabular-nums}.lg em{font-style:normal;color:var(--muted);font-size:12px;text-align:right}
+.cols{display:flex;gap:8px;align-items:stretch;overflow-x:auto;padding-bottom:4px}
+.col{flex:1 0 92px;display:flex;flex-direction:column;align-items:center;gap:4px;background:none;border:0;padding:4px;font:inherit;color:inherit;cursor:pointer;border-radius:4px}
+.col b{font-variant-numeric:tabular-nums}.col .cb{width:100%;height:150px;background:var(--paper);border-radius:2px;display:flex;align-items:flex-end;overflow:hidden}
+.col .cb span{display:block;width:100%;background:var(--teal);border-radius:2px 2px 0 0;transition:height .4s}
+.col:hover .cb span,.col.on .cb span{background:var(--ink)}.col.dim{opacity:.45}
+.col em{font-style:normal;font-size:12px;line-height:1.25;text-align:center;overflow-wrap:anywhere}
+</style>
+
+<header><div class="wrap">
+<div class="crumb">Guayas · Cantón Guayaquil · Parroquias Rocafuerte y Carbo</div>
+<h1>Atractivos y servicios turísticos de Rocafuerte y Carbo</h1>
+<p class="sub">Inventario nacional de atractivos 2026 (corte 31 ago 2026) y catastro nacional de servicios 2026. Toca las barras y filtros para explorar cada tabla.</p>
+</div></header>
+<nav><div class="wrap" role="tablist" id="tabs"></div></nav>
+<main class="wrap">
+<section id="v-res"></section>
+<section id="v-exp" hidden></section>
+<section id="v-atr" hidden></section>
+<section id="v-roc" hidden></section>
+<section id="v-car" hidden></section>
+<footer>Fuentes: Inventario nacional de atractivos 2026 (hoja corte_31ago26) y Catastro nacional de servicios 2026. Los nombres y textos se muestran tal como constan en los archivos; en los gráficos "Categoría Única" y "Categoría única" se suman como una sola categoría.</footer>
+</main>
+<script>
+const D={"A": [{"n": "BIBLIOTECA DE LA UNIVERSIDAD DE LAS ARTES", "cat": "MANIFESTACIONES CULTURALES", "t": "ARQUITECTURA", "st": "INFRAESTRUCTURA CULTURAL", "j": "III", "e": "APROBADA", "p": "ROCAFUERTE"}, {"n": "BIBLIOTECA MUNICIPAL", "cat": "MANIFESTACIONES CULTURALES", "t": "ARQUITECTURA", "st": "INFRAESTRUCTURA CULTURAL", "j": "III", "e": "APROBADA", "p": "ROCAFUERTE"}, {"n": "ESPACIO URBANO CALLE PANAMÁ", "cat": "MANIFESTACIONES CULTURALES", "t": "ARQUITECTURA", "st": "ESPACIO PÚBLICO", "j": "III", "e": "APROBADA", "p": "CARBO (CONCEPCIÓN)"}, {"n": "IGLESIA SAN FRANCISCO \"NUESTRA SEÑORA DE LOS ÁNGELES\"", "cat": "MANIFESTACIONES CULTURALES", "t": "ARQUITECTURA", "st": "HISTÓRICA / VERNÁCULA", "j": "II", "e": "APROBADA", "p": "ROCAFUERTE"}, {"n": "LA PERLA / LA NORIA", "cat": "MANIFESTACIONES CULTURALES", "t": "ARQUITECTURA", "st": "INFRAESTRUCTURA RECREATIVA", "j": "II", "e": "APROBADA", "p": "CARBO (CONCEPCIÓN)"}, {"n": "MUSEO ANTROPOLÓGICO Y DE ARTE CONTEMPORÁNEO", "cat": "MANIFESTACIONES CULTURALES", "t": "ARQUITECTURA", "st": "INFRAESTRUCTURA CULTURAL", "j": "III", "e": "APROBADA", "p": "CARBO (CONCEPCIÓN)"}, {"n": "MUSEO NACIONAL DEL CACAO", "cat": "MANIFESTACIONES CULTURALES", "t": "ARQUITECTURA", "st": "INFRAESTRUCTURA CULTURAL", "j": "III", "e": "APROBADA", "p": "CARBO (CONCEPCIÓN)"}, {"n": "MUSEO EN MINIATURA GUAYAQUIL EN LA HISTORIA", "cat": "MANIFESTACIONES CULTURALES", "t": "ARQUITECTURA", "st": "INFRAESTRUCTURA CULTURAL", "j": "III", "e": "APROBADA", "p": "CARBO (CONCEPCIÓN)"}, {"n": "MUSEO MUNICIPAL DE GUAYAQUIL", "cat": "MANIFESTACIONES CULTURALES", "t": "ARQUITECTURA", "st": "INFRAESTRUCTURA CULTURAL", "j": "III", "e": "APROBADA", "p": "ROCAFUERTE"}, {"n": "MUSEO NAHIM ISAÍAS", "cat": "MANIFESTACIONES CULTURALES", "t": "ARQUITECTURA", "st": "INFRAESTRUCTURA CULTURAL", "j": "III", "e": "APROBADA", "p": "ROCAFUERTE"}, {"n": "PALACIO DE LA GOBERNACIÓN", "cat": "MANIFESTACIONES CULTURALES", "t": "ARQUITECTURA", "st": "HISTÓRICA / VERNÁCULA", "j": "II", "e": "APROBADA", "p": "ROCAFUERTE"}, {"n": "PALACIO MUNICIPAL", "cat": "MANIFESTACIONES CULTURALES", "t": "ARQUITECTURA", "st": "HISTÓRICA / VERNÁCULA", "j": "II", "e": "APROBADA", "p": "ROCAFUERTE"}, {"n": "PLAZA DE LA ADMINISTRACIÓN", "cat": "MANIFESTACIONES CULTURALES", "t": "ARQUITECTURA", "st": "ESPACIO PÚBLICO", "j": "III", "e": "APROBADA", "p": "ROCAFUERTE"}, {"n": "PLAZA SAN FRANCISCO", "cat": "MANIFESTACIONES CULTURALES", "t": "ARQUITECTURA", "st": "ESPACIO PÚBLICO", "j": "III", "e": "APROBADA", "p": "ROCAFUERTE"}, {"n": "AEROVÍA GUAYAQUIL ", "cat": "MANIFESTACIONES CULTURALES", "t": "REALIZACIONES TÉCNICAS Y CIENTÍFICAS", "st": "OBRAS DE INGENIERÍA", "j": "II", "e": "APROBADA", "p": "CARBO (CONCEPCIÓN)"}, {"n": "BASÍLICA MENOR NUESTRA SEÑORA DE LA MERCED", "cat": "MANIFESTACIONES CULTURALES", "t": "ARQUITECTURA", "st": "HISTÓRICA / VERNÁCULA", "j": "II", "e": "APROBADA", "p": "CARBO (CONCEPCIÓN)"}, {"n": "MERCADO ARTESANAL DE GUAYAQUIL ", "cat": "MANIFESTACIONES CULTURALES", "t": "ACERVO CULTURAL Y POPULAR", "st": "FERIAS Y MERCADOS", "j": "III", "e": "APROBADA", "p": "CARBO (CONCEPCIÓN)"}, {"n": "MONUMENTO A LOS LIBERTADORES SIMÓN BOLÍVAR Y SAN MARTÍN", "cat": "MANIFESTACIONES CULTURALES", "t": "ARQUITECTURA", "st": "MONUMENTOS", "j": "III", "e": "APROBADA", "p": "CARBO (CONCEPCIÓN)"}, {"n": "RÍO GUAYAS", "cat": "ATRACTIVOS NATURALES", "t": "RÍOS", "st": "RÍO", "j": "II", "e": "APROBADA", "p": "ROCAFUERTE"}, {"n": "TORRE MORISCA \" TORRE DEL RELOJ\"", "cat": "MANIFESTACIONES CULTURALES", "t": "ARQUITECTURA", "st": "MONUMENTOS", "j": "III", "e": "APROBADA", "p": "ROCAFUERTE"}, {"n": "BUQUE ESCUELA GUAYAS", "cat": "MANIFESTACIONES CULTURALES", "t": "REALIZACIONES TÉCNICAS Y CIENTÍFICAS", "st": "OBRAS DE INGENIERÍA", "j": "III", "e": "APROBADA", "p": "ROCAFUERTE"}, {"n": "MONUMENTO A LA FRAGUA DE VULCANO", "cat": "MANIFESTACIONES CULTURALES", "t": "ARQUITECTURA", "st": "MONUMENTOS", "j": "III", "e": "APROBADA", "p": "ROCAFUERTE"}, {"n": "MONUMENTO ECUESTRE DE SIMÓN BOLÍVAR ", "cat": "MANIFESTACIONES CULTURALES", "t": "ARQUITECTURA", "st": "MONUMENTOS", "j": "III", "e": "APROBADA", "p": "ROCAFUERTE"}, {"n": "BOLÓN DE VERDE", "cat": "MANIFESTACIONES CULTURALES", "t": "ACERVO CULTURAL Y POPULAR", "st": "GASTRONOMÍA", "j": "II", "e": "APROBADA", "p": "ROCAFUERTE"}, {"n": "CALDO DE BOLA", "cat": "MANIFESTACIONES CULTURALES", "t": "ACERVO CULTURAL Y POPULAR", "st": "GASTRONOMÍA", "j": "III", "e": "APROBADA", "p": "ROCAFUERTE"}, {"n": "DULCES TRADICIONALES DE GUAYAQUIL", "cat": "MANIFESTACIONES CULTURALES", "t": "ACERVO CULTURAL Y POPULAR", "st": "GASTRONOMÍA", "j": "II", "e": "APROBADA", "p": "ROCAFUERTE"}, {"n": "ENCENDIDO LUCES DE NAVIDAD", "cat": "MANIFESTACIONES CULTURALES", "t": "ACONTECIMIENTOS PROGRAMADOS", "st": "EVENTOS ARTÍSTICOS", "j": "II", "e": "APROBADA", "p": "ROCAFUERTE"}, {"n": "CATEDRAL METROPOLITANA SAN PEDRO APÓSTOL ", "cat": "MANIFESTACIONES CULTURALES", "t": "ARQUITECTURA", "st": "HISTÓRICA / VERNÁCULA", "j": "III", "e": "APROBADA", "p": "ROCAFUERTE"}, {"n": "ESCULTURA COLUMNA DE LOS PRÓCERES", "cat": "MANIFESTACIONES CULTURALES", "t": "ARQUITECTURA", "st": "MONUMENTOS", "j": "II", "e": "APROBADA", "p": "ROCAFUERTE"}, {"n": "PARQUE SEMINARIO", "cat": "MANIFESTACIONES CULTURALES", "t": "ARQUITECTURA", "st": "ESPACIO PÚBLICO", "j": "III", "e": "APROBADA", "p": "ROCAFUERTE"}, {"n": "PLAZA CENTENARIO", "cat": "MANIFESTACIONES CULTURALES", "t": "ARQUITECTURA", "st": "ESPACIO PÚBLICO", "j": "III", "e": "APROBADA", "p": "ROCAFUERTE"}], "S": [{"n": "VANSERVICE INTERNACIONAL", "a": "TRANSPORTE TURÍSTICO", "c": "TERRESTRE", "k": "Categoría Única", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "HOTEL ELITE INTERNACIONAL", "a": "ALOJAMIENTO", "c": "HOTEL", "k": "2 Estrellas", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "BONANZA", "a": "ALOJAMIENTO", "c": "HOSTAL", "k": "1 Estrella", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "CENTRAL GRILL 593", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "ESTABLECIMIENTO MÓVIL", "k": "Categoría única", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "PACIFICO HOSTELLING INT.", "a": "ALOJAMIENTO", "c": "HOSTAL", "k": "1 Estrella", "p": "CARBO (CONCEPCIÓN)", "e": "PENDIENTE DE INSPECCIÓN"}, {"n": "WINEPAX", "a": "ALOJAMIENTO", "c": "HOSTAL", "k": "3 Estrellas", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "BAR EL BUCANERO", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "BAR", "k": "(1) Una copa", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "PRAGA", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "BAR", "k": "(3) Tres copas", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "LEVEL HOST", "a": "ALOJAMIENTO", "c": "INMUEBLES HABITACIONALES", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "COTIDIANO BOWLS AND SALAD", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(1) Una taza", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "YOGUR  NACIONAL", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(1) Una taza", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "PASTA BASTA", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "ESTABLECIMIENTO MÓVIL", "k": "Categoría única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "POSTRES DIANA CARRION", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "ESTABLECIMIENTO MÓVIL", "k": "Categoría única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "S & O LA PESCA", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "ESTABLECIMIENTO MÓVIL", "k": "Categoría única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "SUITE BELLINI III", "a": "ALOJAMIENTO", "c": "INMUEBLES HABITACIONALES", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "RIVERFRONT", "a": "ALOJAMIENTO", "c": "INMUEBLES HABITACIONALES", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "DEL RIO RESTO BAR", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "ESTABLECIMIENTO MÓVIL", "k": "Categoría única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "MURCIA", "a": "ALOJAMIENTO", "c": "HOSTAL", "k": "1 Estrella", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "HOTEL SANDER", "a": "ALOJAMIENTO", "c": "HOTEL", "k": "2 Estrellas", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "AIRBNB ALOJAMIENTO", "a": "ALOJAMIENTO", "c": "INMUEBLES HABITACIONALES", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "CORDOVA ST. BISTRO BAR", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(1) Un tenedor", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "PLANTA BAJA", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "BAR", "k": "(1) Una copa", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "RETOKA", "a": "ALOJAMIENTO", "c": "INMUEBLES HABITACIONALES", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "MEDIA LUNA", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "ESTABLECIMIENTO MÓVIL", "k": "Categoría única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "ADELI", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(1) Una taza", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "ALIQUILER DE VIVIENDA A CORTO PLAZO SEGUN ART.28 LITERAL B DE LEY DE INQUUILINAT", "a": "ALOJAMIENTO", "c": "INMUEBLES HABITACIONALES", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "PATISSERIE DOMREMI CREPERIE", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(1) Una taza", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "REMIENDO AL CORAZON", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "BAR", "k": "(1) Una copa", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "ALVEOLO", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "ESTABLECIMIENTO MÓVIL", "k": "Categoría única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "HOTEL PERLA CENTRAL", "a": "ALOJAMIENTO", "c": "HOTEL", "k": "2 Estrellas", "p": "CARBO (CONCEPCIÓN)", "e": "PENDIENTE DE INSPECCIÓN"}, {"n": "TRANSOCEANICA CIA. LTDA.", "a": "TRANSPORTE TURÍSTICO", "c": "AÉREO", "k": "Categoría Única", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "KLM CIA REAL HOLANDESA DE AVIACION", "a": "TRANSPORTE TURÍSTICO", "c": "AÉREO", "k": "Categoría Única", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "GRAND HOTEL GUAYAQUIL CIA. LTDA.", "a": "ALOJAMIENTO", "c": "HOTEL", "k": "4 Estrellas", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "HOTEL SOL DE ORIENTE", "a": "ALOJAMIENTO", "c": "HOTEL", "k": "3 Estrellas", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "RESTAURANTE CAFE PALACE", "a": "ALOJAMIENTO", "c": "HOTEL", "k": "4 Estrellas", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "DELGADO TRAVEL", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES INTERNACIONAL", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "GRUDENTUR S.A.", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES INTERNACIONAL", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "EUROEXPRESO S.A.", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES DUAL", "k": "Categoría Única", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "ISAITUR S.A.", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES DUAL", "k": "Categoría Única", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "JALAL", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(1) Una taza", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "MUNDOTRAVEL", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES INTERNACIONAL", "k": "Categoría Única", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "LISTO SANTANA", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(1) Un tenedor", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "LISTO RIVER GARDEN", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(1) Un tenedor", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "9 DE OCTUBRE", "a": "ALOJAMIENTO", "c": "HOTEL", "k": "2 Estrellas", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "H.D.P REPRESENTACIONES S.A", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES MAYORISTA", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "SWEET & COFFEE", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(1) Una taza", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "SWEET & COFFEE", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(1) Una taza", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "SWEET & COFFEE", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(1) Una taza", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "SWEET & COFFEE", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(2) Dos tazas", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "SWEET & COFFEE", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(2) Dos tazas", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "SWEET & COFFEE", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(1) Una taza", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "SWEET & COFFEE", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(2) Dos tazas", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "SWEET & COFFEE", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(1) Una taza", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "BARBARATUR S.A.", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES INTERNACIONAL", "k": "Categoría Única", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "CANSIONG TRAVEL", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES DUAL", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "TINTA CAFE", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(1) Un tenedor", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "NATURISSIMO", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(1) Una taza", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "NATURISSIMO", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(1) Una taza", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "HOTEL LAS PEÑAS", "a": "ALOJAMIENTO", "c": "HOTEL", "k": "2 Estrellas", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "TRAVELCLUB", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES INTERNACIONAL", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "EL CAFE DE TERE", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(1) Una taza", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "DULCERIA LA PALMA", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(1) Una taza", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "TOMASTUR", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES DUAL", "k": "Categoría Única", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "CENTRO DE VIAJES ECUADOR", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES DUAL", "k": "Categoría Única", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "SPEEDTRAVEL S. A.", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES INTERNACIONAL", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "DREAM & TRAVEL", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES MAYORISTA", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "SKY TRAVEL", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES DUAL", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "HOTEL PATRIMONIAL GREENFIELD", "a": "ALOJAMIENTO", "c": "HOTEL", "k": "3 Estrellas", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "YOU TRAVEL AGENCY", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES DUAL", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "COSTILLAS DE NICO LAS", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(3) Tres tenedores", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "TRANSVUELOS", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES DUAL", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "LA DOÑA", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "ESTABLECIMIENTO MÓVIL", "k": "Categoría única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "TEAM TRAVEL", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES INTERNACIONAL", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "VIPMATUR S.A. ", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES INTERNACIONAL", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "GOURMET MARKET", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(4) Cuatro tenedores", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "IL NAPO", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(3) Tres tenedores", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "JS TRAVEL", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES INTERNACIONAL", "k": "Categoría Única", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "DOUBLETREE BY HILTON GUAYAQUIL", "a": "ALOJAMIENTO", "c": "HOTEL", "k": "5 Estrellas", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "BISCUITS BY NANE", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(1) Una taza", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "BOMBONS COFFEE SHOP", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(2) Dos tazas", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "BOMBONS COFFEE SHOP", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(2) Dos tazas", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "BOMBONS COFFEE SHOP", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(1) Una taza", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "YU SMARTHOTELS", "a": "ALOJAMIENTO", "c": "HOTEL", "k": "2 Estrellas", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "LA PATA GORDA RESTAURANTE", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(4) Cuatro tenedores", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "EDDYS THE ORIGINAL WINGS", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(1) Un tenedor", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "TURID SUR CIA LTDA", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA OPERADORA DE TURISMO", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "AGENCIA DE VIAJES ZTOURS", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES DUAL", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "247CONSOLIDATE S.A.", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES MAYORISTA", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "AGENCIA DE VIAJE Y TURISMO EUGETRAVEL S.A.", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES INTERNACIONAL", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "PUERTO MANI", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(1) Un tenedor", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "LA CAVA", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "ESTABLECIMIENTO MÓVIL", "k": "Categoría única", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "LA CHANCHADA", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "ESTABLECIMIENTO MÓVIL", "k": "Categoría única", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "LA TASCA", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "ESTABLECIMIENTO MÓVIL", "k": "Categoría única", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "MASAMADRE S.A.S.", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(1) Una taza", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "RIVIERA URDESA", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(4) Cuatro tenedores", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "ALAS MUNDIALES", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES MAYORISTA", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "EL MONO GOLOSO", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "ESTABLECIMIENTO MÓVIL", "k": "Categoría única", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "LA BRASERIA", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(1) Un tenedor", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "LA TASCA DEL CENTRO", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(3) Tres tenedores", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "LA CENTRAL DELI SHOP", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "ESTABLECIMIENTO MÓVIL", "k": "Categoría única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "LA CEVICHEVERE", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "ESTABLECIMIENTO MÓVIL", "k": "Categoría única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "LA CHIVA DE MI TIERRA", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "ESTABLECIMIENTO MÓVIL", "k": "Categoría única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "NICANOR", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "ESTABLECIMIENTO MÓVIL", "k": "Categoría única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "RECLUTAS", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "ESTABLECIMIENTO MÓVIL", "k": "Categoría única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "JULIANABAR", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "BAR", "k": "(3) Tres copas", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "IDEAS JOURNEY GROUP", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA OPERADORA DE TURISMO", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "SFOGLIA", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(2) Dos tenedores", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "POSTRES DIANA CARRION", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "ESTABLECIMIENTO MÓVIL", "k": "Categoría única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "CLOUD TRAVEL", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES DUAL", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "MARESPRESSO", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(1) Una taza", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "LE CROISSANT", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "CAFETERÍA", "k": "(1) Una taza", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "HOTEL RAMADA", "a": "ALOJAMIENTO", "c": "HOTEL", "k": "3 Estrellas", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "LA ROLLERIA", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(1) Un tenedor", "p": "ROCAFUERTE", "e": "PENDIENTE DE INSPECCIÓN"}, {"n": "SABOR & ARTE GYE", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(1) Un tenedor", "p": "CARBO (CONCEPCIÓN)", "e": "PENDIENTE DE INSPECCIÓN"}, {"n": "EXCLUSIVE TRAVEL", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES MAYORISTA", "k": "Categoría Única", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "HOSTAL SAVOY II", "a": "ALOJAMIENTO", "c": "HOSTAL", "k": "1 Estrella", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "HOSTAL TURISTA", "a": "ALOJAMIENTO", "c": "HOSTAL", "k": "1 Estrella", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "HOSTAL TURISTA 2", "a": "ALOJAMIENTO", "c": "HOSTAL", "k": "1 Estrella", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "HOSTAL PLAZA CENTENARIO", "a": "ALOJAMIENTO", "c": "HOSTAL", "k": "1 Estrella", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "HOSTAL MAR DEL PLATA", "a": "ALOJAMIENTO", "c": "HOSTAL", "k": "1 Estrella", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "HOTEL PANAMA BOUTIQUE", "a": "ALOJAMIENTO", "c": "HOTEL", "k": "2 Estrellas", "p": "CARBO (CONCEPCIÓN)", "e": "PENDIENTE DE INSPECCIÓN"}, {"n": "IBIS STYLES GUAYAQUIL", "a": "ALOJAMIENTO", "c": "HOTEL", "k": "4 Estrellas", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "PIZZA HUT", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(1) Un tenedor", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "MC DONALD'S MALECON", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(1) Un tenedor", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "GALASAM INTERNACIONAL S.A.", "a": "AGENCIAMIENTO TURÍSTICO", "c": "AGENCIA DE VIAJES INTERNACIONAL", "k": "Categoría Única", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "KFC", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(1) Un tenedor", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "KFC", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(1) Un tenedor", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "KFC", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(1) Un tenedor", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "LA TABLITA DEL TARTARO", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(1) Un tenedor", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "MENESTRAS DEL NEGRO", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(1) Un tenedor", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "MENESTRAS DEL NEGRO", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(1) Un tenedor", "p": "CARBO (CONCEPCIÓN)", "e": "RATIFICADO"}, {"n": "EL TORO ASADO", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(1) Un tenedor", "p": "ROCAFUERTE", "e": "RATIFICADO"}, {"n": "EL TORO ASADO", "a": "ALIMENTOS, BEBIDAS Y ENTRETENIMIENTO", "c": "RESTAURANTE", "k": "(1) Un tenedor", "p": "CARBO (CONCEPCIÓN)", "e": "PENDIENTE DE INSPECCIÓN"}]};
+const ROC='ROCAFUERTE',CAR='CARBO (CONCEPCIÓN)';
+const PN={[ROC]:'Rocafuerte',[CAR]:'Carbo (Concepción)'};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const $=id=>document.getElementById(id);
+const norm=s=>s.trim().toLowerCase();
+const tn=a=>a.cat.indexOf('NATURAL')>-1?'Natural':'Cultural';
+function count(arr,fn){const m=new Map();arr.forEach(x=>{const k=fn(x);const key=norm(k);const e=m.get(key)||{label:k,value:0};e.value++;m.set(key,e)});return [...m.values()].sort((a,b)=>b.value-a.value||a.label.localeCompare(b.label))}
+function bars(items,{sel,onPick,max}={}){
+  const mx=max||Math.max(1,...items.map(i=>i.value));
+  return items.map(i=>{const on=sel&&norm(sel)===norm(i.label);
+    const cls='bar'+(onPick?'':' static')+(on?' sel':'')+(sel&&!on?' dim':'');
+    return `<${onPick?'button':'div'} class="${cls}" ${onPick?`data-k="${esc(i.label)}" aria-pressed="${on}"`:''}><span class="l">${esc(i.label)}</span><span class="t"><span class="f" style="width:${i.value/mx*100}%"></span></span><span class="v">${i.value}</span></${onPick?'button':'div'}>`}).join('')}
+function matrix(rows,cols,get,{rowHead,total=true}={}){
+  const cell={};let mx=1;
+  rows.forEach(r=>cols.forEach(c=>{const v=get(r,c);cell[r+'|'+c]=v;mx=Math.max(mx,v)}));
+  const colT=cols.map(c=>rows.reduce((s,r)=>s+cell[r+'|'+c],0));
+  let h=`<table class="mx"><thead><tr><th>${esc(rowHead||'')}</th>${cols.map(c=>`<th style="text-align:center">${esc(c)}</th>`).join('')}${total?'<th style="text-align:center">Total</th>':''}</tr></thead><tbody>`;
+  rows.forEach(r=>{const t=cols.reduce((s,c)=>s+cell[r+'|'+c],0);
+    h+=`<tr><th style="background:var(--paper);color:var(--ink)">${esc(r)}</th>${cols.map(c=>{const v=cell[r+'|'+c];const a=v/mx;
+      return `<td class="c" style="background:${v?`rgba(22,125,141,${.12+a*.88})`:'transparent'};color:${a>.45?'#fff':'#071B2B'}">${v||'·'}</td>`}).join('')}${total?`<td class="c">${t}</td>`:''}</tr>`});
+  if(total)h+=`<tr class="tot"><th style="background:var(--mist);color:var(--ink)">Total</th>${colT.map(v=>`<td class="c">${v}</td>`).join('')}<td class="c">${colT.reduce((a,b)=>a+b,0)}</td></tr>`;
+  return h+'</tbody></table>'}
+const uniq=a=>[...new Map(a.map(x=>[norm(x),x])).values()];
+
+/* tabs */
+const TABS=[['v-res','Resumen general'],['v-exp','Explorador interactivo'],['v-atr','Atractivos'],['v-roc','Servicios · Rocafuerte'],['v-car','Servicios · Carbo']];
+$('tabs').innerHTML=TABS.map(([id,t],i)=>`<button role="tab" data-t="${id}" aria-selected="${i==0}">${t}</button>`).join('');
+function show(id){TABS.forEach(([v])=>$(v).hidden=v!==id);document.querySelectorAll('#tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===id));try{history.replaceState(null,'','#'+id)}catch(e){}scrollTo(0,0)}
+$('tabs').onclick=e=>{const b=e.target.closest('button');if(b)show(b.dataset.t)};
+
+/* RESUMEN */
+(function(){
+  const A=D.A,S=D.S,pa=p=>A.filter(a=>a.p===p),ps=p=>S.filter(s=>s.p===p);
+  const acts=count(S,s=>s.a).map(x=>x.label);
+  $('v-res').innerHTML=`
+  <h2>Resumen general</h2><p class="lead">Vista conjunta de las parroquias Rocafuerte y Carbo del cantón Guayaquil, provincia del Guayas.</p>
+  <div class="kpis">
+   <div class="kpi"><b>${A.length}</b><span>Atractivos inventariados</span></div>
+   <div class="kpi alt"><b>${S.length}</b><span>Establecimientos catastrados</span></div>
+   <div class="kpi lt"><b>${pa(ROC).length} / ${pa(CAR).length}</b><span>Atractivos Rocafuerte / Carbo</span></div>
+   <div class="kpi lt"><b>${ps(ROC).length} / ${ps(CAR).length}</b><span>Servicios Rocafuerte / Carbo</span></div>
+  </div>
+  <div class="grid">
+   <div class="card"><h3>Atractivos por parroquia y tipo</h3><p class="hint">Natural o cultural, según la categoría del inventario</p>
+    <div class="tablewrap">${matrix(['Natural','Cultural'],[ROC,CAR].map(p=>PN[p]),(r,c)=>A.filter(a=>tn(a)===r&&PN[a.p]===c).length,{rowHead:'Tipo'})}</div></div>
+   <div class="card"><h3>Servicios por actividad y parroquia</h3><p class="hint">Cuántos establecimientos hay de cada actividad</p>
+    <div class="tablewrap">${matrix(acts,[ROC,CAR].map(p=>PN[p]),(r,c)=>S.filter(s=>s.a===r&&PN[s.p]===c).length,{rowHead:'Actividad'})}</div></div>
+  </div>
+  <div class="grid">
+   <div class="card"><h3>Servicios por clasificación · Rocafuerte</h3><p class="hint">${ps(ROC).length} establecimientos</p>${bars(count(ps(ROC),s=>s.c))}</div>
+   <div class="card"><h3>Servicios por clasificación · Carbo</h3><p class="hint">${ps(CAR).length} establecimientos</p>${bars(count(ps(CAR),s=>s.c))}</div>
+  </div>
+  <div class="grid">
+   <div class="card"><h3>Atractivos por subtipo</h3><p class="hint">Ambas parroquias</p>${bars(count(A,a=>a.st))}</div>
+   <div class="card"><h3>Atractivos por jerarquía</h3><p class="hint">Jerarquía II y III del inventario</p>${bars(count(A,a=>'Jerarquía '+a.j))}
+    <div class="note"><b>Para aprender:</b> alimentos, bebidas y entretenimiento es la actividad principal en ambas parroquias (26 de 43 servicios en Rocafuerte y 47 de 90 en Carbo). Carbo concentra el alojamiento (23 frente a 6) y solo Rocafuerte registra transporte turístico (3). Cambia de pestaña para ver el detalle.</div></div>
+  </div>`;
+  /* data-driven note kept generic above; verify numbers in tabs */
+})();
+
+/* EXPLORADOR (ambas parroquias combinadas) */
+(function(){
+  const A=D.A,S=D.S,root=$('v-exp');
+  let st={scope:'ambos',nat:null,sub:null,act:null,cla:null,cat:null,q:''};
+  const nCul=A.filter(a=>tn(a)==='Cultural').length,nNat=A.length-nCul;
+  const actC=count(S,s=>s.a);
+  const PAL=['#167D8D','#5FB0BC','#B9E4E8','#9FB3BF','#4A6475'];
+  const slices=[{k:'nat:Cultural',l:'Atractivos culturales',v:nCul,c:'#071B2B'},{k:'nat:Natural',l:'Atractivos naturales',v:nNat,c:'#4A6475'},
+    ...actC.map((x,i)=>({k:'act:'+x.label,l:x.label,v:x.value,c:[PAL[0],PAL[1],PAL[2],PAL[3]][i%4]}))];
+  const TOT=slices.reduce((s,x)=>s+x.v,0);
+  root.innerHTML=`<h2>Explorador interactivo</h2><p class="lead">Atractivos y servicios de Rocafuerte y Carbo en una sola vista, sin separar parroquias. Toca un segmento, una barra o una columna para filtrar todo el panel.</p>
+  <div class="tools"><div class="seg" id="x-s"></div><input type="search" id="x-q" placeholder="Buscar en atractivos y servicios…" aria-label="Buscar"><button class="chip" id="x-clr" hidden>Limpiar filtros ✕</button></div>
+  <div class="tools" id="x-ch" style="margin-top:0"></div>
+  <div class="kpis" id="x-k"></div>
+  <div class="note" id="x-d" style="margin:0 0 16px"></div>
+  <div class="grid">
+   <div class="card"><h3>Composición de la oferta</h3><p class="hint">${TOT} registros: atractivos y servicios por grupo</p><div class="donutwrap"><div class="dsvg" id="x-dn"></div><div class="legend" id="x-lg"></div></div></div>
+   <div class="card"><h3>Servicios por clasificación</h3><p class="hint">Toca una barra para filtrar</p><div id="x-cl"></div></div>
+   <div class="card"><h3>Atractivos por subtipo</h3><p class="hint">Toca una barra para filtrar</p><div id="x-sb"></div></div>
+  </div>
+  <div class="card" style="margin-bottom:16px"><h3>Servicios por categoría</h3><p class="hint">Estrellas, tenedores, tazas, copas o categoría única. Toca una columna para filtrar.</p><div class="cols" id="x-ct"></div></div>
+  <div class="tools"><h3 style="font:600 15px var(--f-d);margin:0">Registros</h3><span class="count" id="x-n"></span></div>
+  <div class="tablewrap" style="max-height:560px;overflow:auto"><table><thead><tr><th>Registro</th><th>Nombre</th><th>Tipo / Actividad</th><th>Subtipo / Clasificación</th><th>Jerarquía / Categoría</th></tr></thead><tbody id="x-r"></tbody></table></div>`;
+  const fa=()=>A.filter(a=>(!st.nat||tn(a)===st.nat)&&(!st.sub||norm(a.st)===norm(st.sub)));
+  const fs=()=>S.filter(s=>(!st.act||norm(s.a)===norm(st.act))&&(!st.cla||norm(s.c)===norm(st.cla))&&(!st.cat||norm(s.k)===norm(st.cat)));
+  const selSlice=x=>{const [t,v]=[x.k.split(':')[0],x.k.slice(x.k.indexOf(':')+1)];return t==='nat'?st.nat===v:st.act&&norm(st.act)===norm(v)};
+  const anySel=()=>slices.some(selSlice);
+  function donut(){
+    const R=70,C=2*Math.PI*R;let cum=0,h='';const sel=anySel();
+    slices.forEach((x,i)=>{const len=x.v/TOT*C,on=selSlice(x);
+      h+=`<circle class="sl${on?' on':''}${sel&&!on?' dim':''}" data-i="${i}" data-k="${esc(x.k)}" tabindex="0" role="button" aria-label="${esc(x.l)}: ${x.v}" cx="100" cy="100" r="${R}" fill="none" stroke="${x.c}" stroke-width="${on?38:30}" stroke-dasharray="${Math.max(len-2,.5)} ${C}" stroke-dashoffset="${-cum}" transform="rotate(-90 100 100)"/>`;cum+=len});
+    $('x-dn').innerHTML=`<svg viewBox="0 0 200 200" role="img" aria-label="Composición de la oferta">${h}<text id="x-c1" x="100" y="102" text-anchor="middle" font-family="Space Grotesk" font-size="30" font-weight="700" fill="#071B2B">${TOT}</text><text id="x-c2" x="100" y="120" text-anchor="middle" font-size="10" fill="#071B2B" opacity=".7">registros</text></svg>`;
+    $('x-lg').innerHTML=slices.map((x,i)=>`<button class="lg${selSlice(x)?' on':''}" data-i="${i}" data-k="${esc(x.k)}"><i style="background:${x.c}"></i><span>${esc(x.l)}</span><b>${x.v}</b><em>${(x.v/TOT*100).toFixed(0)} %</em></button>`).join('');
+  }
+  function hov(i){const x=slices[i];$('x-c1').textContent=x?x.v:TOT;$('x-c2').textContent=x?(x.v/TOT*100).toFixed(1)+' % · '+x.l.slice(0,26):'registros'}
+  function draw(){
+    $('x-s').innerHTML=[['ambos','Atractivos y servicios'],['atr','Solo atractivos'],['srv','Solo servicios']].map(([v,l])=>`<button data-sc="${v}" aria-pressed="${st.scope===v}">${l}</button>`).join('');
+    const a=st.scope==='srv'?[]:fa(),s=st.scope==='atr'?[]:fs();
+    const chips=[['nat','Tipo'],['sub','Subtipo'],['act','Actividad'],['cla','Clasificación'],['cat','Categoría']].filter(([k])=>st[k]);
+    $('x-ch').innerHTML=chips.map(([k,l])=>`<button class="chip" data-x="${k}">${l}: ${esc(st[k])} ✕</button>`).join('');
+    $('x-clr').hidden=!chips.length&&!st.q;
+    $('x-k').innerHTML=`<div class="kpi"><b>${a.length+s.length}</b><span>Registros en la selección</span></div><div class="kpi alt"><b>${a.length}</b><span>Atractivos</span></div><div class="kpi lt"><b>${s.length}</b><span>Servicios</span></div><div class="kpi lt"><b>${new Set(s.map(x=>norm(x.c))).size+new Set(a.map(x=>norm(x.st))).size}</b><span>Subtipos y clasificaciones</span></div>`;
+    const tc=count(s,x=>x.c)[0],ts=count(a,x=>x.st)[0];
+    $('x-d').innerHTML='<b>Dato destacado:</b> '+(s.length&&tc?`entre los servicios, la clasificación más frecuente es «${esc(tc.label)}» (${tc.value} de ${s.length}, ${(tc.value/s.length*100).toFixed(0)} %). `:'')+(a.length&&ts?`Entre los atractivos, el subtipo más frecuente es «${esc(ts.label)}» (${ts.value} de ${a.length}, ${(ts.value/a.length*100).toFixed(0)} %).`:'')||'Sin registros con esta selección.';
+    donut();
+    $('x-cl').innerHTML=bars(count(S,x=>x.c),{sel:st.cla,onPick:1}).replace(/data-k=/g,'data-f="cla" data-k=');
+    $('x-sb').innerHTML=bars(count(A,x=>x.st),{sel:st.sub,onPick:1}).replace(/data-k=/g,'data-f="sub" data-k=');
+    const ct=count(S,x=>x.k).slice(0,8),mx=Math.max(...ct.map(c=>c.value));
+    $('x-ct').innerHTML=ct.map(c=>{const on=st.cat&&norm(st.cat)===norm(c.label);return `<button class="col${on?' on':''}${st.cat&&!on?' dim':''}" data-f="cat" data-k="${esc(c.label)}" aria-pressed="${on}"><b>${c.value}</b><span class="cb"><span style="height:${c.value/mx*100}%"></span></span><em>${esc(c.label)}</em></button>`}).join('');
+    const rows=[...a.map(x=>({t:'Atractivo',n:x.n,g:tn(x),d:x.st,c:'Jerarquía '+x.j})),...s.map(x=>({t:'Servicio',n:x.n,g:x.a,d:x.c,c:x.k}))].filter(r=>!st.q||(r.n+' '+r.g+' '+r.d+' '+r.c).toLowerCase().includes(st.q));
+    $('x-n').textContent=`${rows.length} de ${A.length+S.length} registros`;
+    $('x-r').innerHTML=rows.map(r=>`<tr><td><span class="badge ${r.t==='Atractivo'?'b-cul':'b-nat'}">${r.t}</span></td><td><b>${esc(r.n)}</b></td><td>${esc(r.g)}</td><td>${esc(r.d)}</td><td>${esc(r.c)}</td></tr>`).join('')||'<tr><td colspan="5">Sin resultados</td></tr>';
+  }
+  const tog=(k,v)=>{st[k]=st[k]&&norm(st[k])===norm(v)?null:v};
+  root.onclick=e=>{const b=e.target.closest('button,circle');if(!b)return;
+    if(b.dataset.sc)st.scope=b.dataset.sc;
+    else if(b.id==='x-clr'){st={...st,nat:null,sub:null,act:null,cla:null,cat:null,q:''};$('x-q').value=''}
+    else if(b.dataset.x)st[b.dataset.x]=null;
+    else if(b.dataset.i!==undefined){const x=slices[+b.dataset.i],t=x.k.split(':')[0];tog(t,x.k.slice(x.k.indexOf(':')+1))}
+    else if(b.dataset.f)tog(b.dataset.f,b.dataset.k);else return;draw()};
+  root.addEventListener('mouseover',e=>{const t=e.target.closest('[data-i]');if(t)hov(+t.dataset.i)});
+  root.addEventListener('mouseout',e=>{if(e.target.closest('[data-i]'))hov(-1)});
+  root.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('circle')){e.preventDefault();e.target.dispatchEvent(new MouseEvent('click',{bubbles:true}))}});
+  $('x-q').oninput=e=>{st.q=e.target.value.toLowerCase();draw()};
+  draw();
+})();
+
+/* ATRACTIVOS */
+(function(){
+  const A=D.A;let st={p:'',t:'',st:null,q:''};
+  const root=$('v-atr');
+  root.innerHTML=`<h2>Inventario de atractivos</h2><p class="lead">Atractivos turísticos de Rocafuerte y Carbo con su tipo (natural o cultural), la categoría de tipo del inventario y su subtipo.</p>
+  <div class="kpis" id="a-k"></div>
+  <div class="grid"><div class="card"><h3>Por subtipo</h3><p class="hint">Toca una barra para filtrar la tabla</p><div id="a-b"></div></div>
+  <div class="card"><h3>Matriz subtipo × parroquia</h3><p class="hint">Más intenso = más atractivos</p><div class="tablewrap" id="a-m"></div></div></div>
+  <div class="tools"><div class="seg" id="a-p"></div><div class="seg" id="a-t"></div><input type="search" id="a-q" placeholder="Buscar atractivo…" aria-label="Buscar atractivo"><span id="a-c" class="count"></span></div>
+  <div id="a-ch" class="tools" style="margin-top:0"></div>
+  <div class="tablewrap"><table><thead><tr><th>Nombre</th><th>Tipo</th><th>Categoría de tipo</th><th>Subtipo</th><th>Jerarquía</th><th>Parroquia</th></tr></thead><tbody id="a-r"></tbody></table></div>`;
+  const seg=(id,opts,key)=>{$(id).innerHTML=opts.map(([v,l])=>`<button data-v="${esc(v)}" aria-pressed="${st[key]===v}">${l}</button>`).join('');};
+  function draw(){
+    seg('a-p',[['','Ambas'],[ROC,'Rocafuerte'],[CAR,'Carbo']],'p');seg('a-t',[['','Natural y cultural'],['Natural','Natural'],['Cultural','Cultural']],'t');
+    const base=A.filter(a=>(!st.p||a.p===st.p)&&(!st.t||tn(a)===st.t));
+    const f=base.filter(a=>(!st.st||norm(a.st)===norm(st.st))&&(!st.q||(a.n+' '+a.st+' '+a.t).toLowerCase().includes(st.q)));
+    $('a-k').innerHTML=`<div class="kpi"><b>${base.length}</b><span>Atractivos en la selección</span></div><div class="kpi alt"><b>${base.filter(a=>tn(a)==='Natural').length}</b><span>Naturales</span></div><div class="kpi lt"><b>${base.filter(a=>tn(a)==='Cultural').length}</b><span>Culturales</span></div><div class="kpi lt"><b>${new Set(base.map(a=>norm(a.st))).size}</b><span>Subtipos distintos</span></div>`;
+    $('a-b').innerHTML=bars(count(base,a=>a.st),{sel:st.st,onPick:1});
+    const sub=count(A,a=>a.st).map(x=>x.label);
+    $('a-m').innerHTML=matrix(sub,[ROC,CAR].map(p=>PN[p]),(r,c)=>A.filter(a=>norm(a.st)===norm(r)&&PN[a.p]===c).length,{rowHead:'Subtipo'});
+    $('a-ch').innerHTML=st.st?`<button class="chip" data-x="1">Subtipo: ${esc(st.st)} ✕</button>`:'';
+    $('a-c').textContent=`${f.length} de ${A.length} atractivos`;
+    $('a-r').innerHTML=f.map(a=>`<tr><td><b>${esc(a.n)}</b></td><td><span class="badge ${tn(a)==='Natural'?'b-nat':'b-cul'}">${tn(a)}</span></td><td>${esc(a.t)}</td><td>${esc(a.st)}</td><td class="n">${esc(a.j)}</td><td>${esc(a.p)}</td></tr>`).join('')||'<tr><td colspan="6">Sin resultados</td></tr>';
+  }
+  root.onclick=e=>{const b=e.target.closest('button');if(!b)return;
+    if(b.parentElement.id==='a-p')st.p=b.dataset.v;else if(b.parentElement.id==='a-t')st.t=b.dataset.v;
+    else if(b.dataset.k)st.st=norm(st.st||'')===norm(b.dataset.k)?null:b.dataset.k;else if(b.dataset.x)st.st=null;draw()};
+  $('a-q').oninput=e=>{st.q=e.target.value.toLowerCase();draw()};
+  draw();
+})();
+
+/* SERVICIOS por parroquia */
+function services(id,P){
+  const S=D.S.filter(s=>s.p===P);const root=$(id);let st={a:null,c:null,k:null,q:''};
+  const fields=[['a','Actividad'],['c','Clasificación'],['k','Categoría']];
+  root.innerHTML=`<h2>Catastro de servicios · ${PN[P]}</h2><p class="lead">Establecimientos turísticos registrados en la parroquia ${PN[P]}. Toca cualquier barra para filtrar la tabla; vuelve a tocarla para quitar el filtro.</p>
+  <div class="kpis" id="${id}-k"></div>
+  <div class="grid"><div class="card"><h3>Por actividad</h3><div id="${id}-a"></div></div><div class="card"><h3>Por clasificación</h3><div id="${id}-c"></div></div><div class="card"><h3>Por categoría</h3><div id="${id}-k2"></div></div></div>
+  <div class="card" style="margin-bottom:16px"><h3>Matriz clasificación × categoría</h3><p class="hint">Cuántos establecimientos hay en cada cruce</p><div class="tablewrap" id="${id}-m"></div></div>
+  <div class="tools"><input type="search" id="${id}-q" placeholder="Buscar establecimiento…" aria-label="Buscar establecimiento"><span class="count" id="${id}-n"></span></div>
+  <div class="tools" id="${id}-ch" style="margin-top:0"></div>
+  <div class="tablewrap" style="max-height:560px;overflow:auto"><table><thead><tr><th>Nombre comercial</th><th>Actividad</th><th>Clasificación</th><th>Categoría</th><th>Parroquia</th></tr></thead><tbody id="${id}-r"></tbody></table></div>`;
+  const match=(s,skip)=>fields.every(([k])=>k===skip||!st[k]||norm(s[k])===norm(st[k]))&&(!st.q||(s.n+' '+s.a+' '+s.c+' '+s.k).toLowerCase().includes(st.q));
+  function draw(){
+    const f=S.filter(s=>match(s));
+    $(id+'-k').innerHTML=`<div class="kpi"><b>${f.length}</b><span>Establecimientos en la selección</span></div><div class="kpi alt"><b>${new Set(f.map(s=>norm(s.a))).size}</b><span>Actividades</span></div><div class="kpi lt"><b>${new Set(f.map(s=>norm(s.c))).size}</b><span>Clasificaciones</span></div><div class="kpi lt"><b>${f.filter(s=>s.e.indexOf('PENDIENTE')>-1).length}</b><span>Pendientes de inspección</span></div>`;
+    [['a','a'],['c','c'],['k','k2']].forEach(([k,el])=>{$(id+'-'+el).innerHTML=bars(count(S.filter(s=>match(s,k)),s=>s[k]),{sel:st[k],onPick:1}).replace(/data-k=/g,`data-f="${k}" data-k=`)});
+    const cl=count(S,s=>s.c).map(x=>x.label),ca=count(S,s=>s.k).map(x=>x.label);
+    $(id+'-m').innerHTML=matrix(cl,ca,(r,c)=>S.filter(s=>norm(s.c)===norm(r)&&norm(s.k)===norm(c)).length,{rowHead:'Clasificación'});
+    $(id+'-ch').innerHTML=fields.filter(([k])=>st[k]).map(([k,l])=>`<button class="chip" data-x="${k}">${l}: ${esc(st[k])} ✕</button>`).join('');
+    $(id+'-n').textContent=`${f.length} de ${S.length} establecimientos`;
+    $(id+'-r').innerHTML=f.map(s=>`<tr><td><b>${esc(s.n)}</b></td><td>${esc(s.a)}</td><td>${esc(s.c)}</td><td>${esc(s.k)}</td><td>${esc(s.p)}</td></tr>`).join('')||'<tr><td colspan="5">Sin resultados</td></tr>';
+  }
+  root.onclick=e=>{const b=e.target.closest('button');if(!b)return;
+    if(b.dataset.f){const k=b.dataset.f;st[k]=st[k]&&norm(st[k])===norm(b.dataset.k)?null:b.dataset.k;}
+    else if(b.dataset.x)st[b.dataset.x]=null;else return;draw()};
+  $(id+'-q').oninput=e=>{st.q=e.target.value.toLowerCase();draw()};
+  draw();
+}
+services('v-roc',ROC);services('v-car',CAR);
+const h=location.hash.slice(1);if(TABS.some(t=>t[0]===h))show(h);
+</script>
+
+</body></html>
